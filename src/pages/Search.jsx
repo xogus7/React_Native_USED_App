@@ -18,7 +18,7 @@ const Search = ({ navigation, route }) => {
   const itemList = route.params;
   const { width } = useWindowDimensions();
   const columns = 3;
-  const imageSize = width / columns - 24;
+  const imageSize = width / columns - 21;
 
   const searchedItemList = itemList.filter(e => e.product.title.includes(query));
 
@@ -29,20 +29,18 @@ const Search = ({ navigation, route }) => {
         style={{
           paddingVertical: 8,
           paddingHorizontal: 8,
-          borderColor: '#e2e2e2',
-          borderWidth: 1,
           borderRadius: 8,
         }}>
         <View style={{}}>
           <Image
-            style={{ width: imageSize, height:  imageSize+ 50, borderRadius: 8}}
+            style={{ width: imageSize, height:  imageSize + 50, borderRadius: 8}}
             source={{uri: item.productImagesUrl[0]}}
           />
           <View style={{}}>
-            <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
+            <Text style={{color: '#111', fontSize: 16}}>
               {item.product.title}
             </Text>
-            <Text style={{color: '#000', fontWeight: 'bold'}}>
+            <Text style={{color: '#111', fontWeight: 'bold'}}>
               {item.product.price.toLocaleString()}원
             </Text>
             <Text style={{color: '#999'}}>

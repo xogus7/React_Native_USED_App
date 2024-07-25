@@ -9,8 +9,7 @@ import Geolocation from "react-native-geolocation-service";
 const down_arrow_icon = require('@icons/down_arrow.png');
 const current_location_icon = require('@icons/current_location.png');
 const search_icon = require('@icons/bottomtab/search_empty.png');
-const mappedDong =
-  require('../assets/Mapped-dong.json');
+const mappedDong = require('../assets/Mapped-dong.json');
 
 const Home = ({ navigation, route }) => {
   const { width, height } = useWindowDimensions();
@@ -25,16 +24,17 @@ const Home = ({ navigation, route }) => {
   }, [])
 
   useEffect(() => {
-    route.params?.address ? fetchAddress() : initLocation();
+    route.params?.address ? fetchLocation() : initLocation();
   }, [route.params]);
 
 
-  const fetchAddress = () => {
+  const fetchLocation = () => {
     const { address } = route.params;
     setDongName(address?.dong);
     const dongData = mappedDong[`${address?.sido} ${address?.sigungu} ${address?.dong}`]
     if (dongData) {
-      const { x, y } = dongData[0];
+      const [x, y] = dongData[0];
+      console.log(`${address.dong}: ${x}, ${y}`)
       mapRef.current?.animateToRegion({
         ...currentRegion,
         longitude: x,
@@ -94,6 +94,49 @@ const Home = ({ navigation, route }) => {
     }
   };
 
+  const renderCards = (item) => {
+    return (
+      <TouchableOpacity
+        style={[
+          styles.productCard,
+          {
+            width: width - 32,
+          },
+        ]}
+        onPress={() => navigation.navigate('Product', { item })}>
+        <View style={{ flexDirection: 'row', gap: 16 }}>
+          <Image
+            style={{ width: 140, height: 140, borderRadius: 100 }}
+            source={{ uri: item.productImagesUrl[0] }}
+          />
+          <View style={{ flex: 1, gap: 4 }}>
+            <Text
+              style={{
+                color: '#000',
+                fontWeight: 'bold',
+                fontSize: 20,
+              }}
+              ellipsizeMode="tail"
+              numberOfLines={1}>
+              {item.product.title}
+            </Text>
+            <Text
+              style={{ flex: 1, color: '#333' }}
+              ellipsizeMode="tail"
+              numberOfLines={3}>
+              {item.product.content}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+              <Text style={{ color: '#000', fontSize: 20 }}>
+                {item.product.price.toLocaleString()}원
+              </Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.header}>
@@ -106,8 +149,8 @@ const Home = ({ navigation, route }) => {
           <Image style={{ width: 32, height: 32 }} source={down_arrow_icon} />
         </TouchableOpacity>
         <TouchableOpacity
-        onPress={() => navigation.navigate('Search', dummyData)}
-            >
+          onPress={() => navigation.navigate('Search', dummyData)}
+        >
           <Image style={styles.searchImage} source={search_icon} />
         </TouchableOpacity>
       </View>
@@ -154,46 +197,7 @@ const Home = ({ navigation, route }) => {
         alwaysBounceHorizontal={false}
         bounces={false}
         decelerationRate={'fast'}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.productCard,
-              {
-                width: width - 32,
-              },
-            ]}
-            onPress={() => navigation.navigate('Product', { item })}>
-            <View style={{ flexDirection: 'row', gap: 16 }}>
-              <Image
-                style={{ width: 140, height: 140, borderRadius: 100 }}
-                source={{ uri: item.productImagesUrl[0] }}
-              />
-              <View style={{ flex: 1, gap: 4 }}>
-                <Text
-                  style={{
-                    color: '#000',
-                    fontWeight: 'bold',
-                    fontSize: 20,
-                  }}
-                  ellipsizeMode="tail"
-                  numberOfLines={1}>
-                  {item.product.title}
-                </Text>
-                <Text
-                  style={{ flex: 1, color: '#333' }}
-                  ellipsizeMode="tail"
-                  numberOfLines={3}>
-                  {item.product.content}
-                </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-                  <Text style={{ color: '#000', fontSize: 20 }}>
-                    {item.product.price.toLocaleString()}원
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => (renderCards(item))}
         onViewableItemsChanged={({ viewableItems }) => {
           if (viewableItems.length) {
             const { index, item } = viewableItems[0];
@@ -270,7 +274,7 @@ const dummyData = [
       addressName: '경기 구리시 교문동',
       sido: '경기',
       gu: '구리시',
-      dong: '교문동',
+      dong: '교문2동',
     },
     productImagesUrl: [
       'https://cdn.pixabay.com/photo/2017/07/31/17/12/water-2559064_1280.jpg',
@@ -280,7 +284,7 @@ const dummyData = [
     user: {
       id: '313512',
       nickname: 'user2',
-      profileImage: 'https://avatar.iran.liara.run/public'
+      profileImage: 'https://avatar.iran.liara.run/public/girl'
     },
     product: {
       id: 7,
@@ -307,11 +311,11 @@ const dummyData = [
     user: {
       id: '313512',
       nickname: 'user2',
-      profileImage: 'https://avatar.iran.liara.run/public'
+      profileImage: 'https://avatar.iran.liara.run/public/girl'
     },
     product: {
       id: 78,
-      title: '쿠키',
+      title: '쿠키쿠키',
       category: 'category',
       price: 12345,
       content: '쿠키-비스킷-과자-음식-8668140',
@@ -319,15 +323,42 @@ const dummyData = [
       updatedDate: '2024-07-24T03:27:46',
     },
     location: {
-      x: 127.133890,
-      y: 37.590318,
-      addressName: '경기 구리시 교문2동 ',
+      x: 127.136237766208,
+      y: 37.5932112069571,
+      addressName: '경기 구리시 교문2동',
       sido: '경기',
       gu: '구리시',
       dong: '교문2동',
     },
     productImagesUrl: [
       'https://cdn.pixabay.com/photo/2024/04/01/06/57/cookies-8668140_1280.jpg',
+    ],
+  },
+  {
+    user: {
+      id: '314231',
+      nickname: 'user3',
+      profileImage: 'https://avatar.iran.liara.run/public/boy'
+    },
+    product: {
+      id: 5,
+      title: '맥북',
+      category: 'category',
+      price: 2500000,
+      content: '맥-맥북-macbookpro-4942769',
+      createdDate: '2024-07-25T03:27:46',
+      updatedDate: '2024-07-25T03:27:46',
+    },
+    location: {
+      x: 127.139468254258,
+      y: 37.5925068021999,
+      addressName: '경기 구리시 교문동',
+      sido: '경기',
+      gu: '구리시',
+      dong: '교문2동',
+    },
+    productImagesUrl: [
+      'https://cdn.pixabay.com/photo/2020/03/18/05/51/mac-4942769_1280.png',
     ],
   },
 ];
