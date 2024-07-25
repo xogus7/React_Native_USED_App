@@ -11,6 +11,7 @@ import Search from './pages/Search';
 import Add from './pages/Add';
 import MyPage from './pages/MyPage';
 import Chat from './pages/Chat';
+import ChatDetail from './pages/ChatDetail';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,6 +39,7 @@ const Router = () => {
       <Stack.Screen name="Product" component={Product} />
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="RegionSelect" component={RegionSelect} />
+      <Stack.Screen name="ChatDetail" component={ChatDetail} />
     </Stack.Navigator>
   );
 };
